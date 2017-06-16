@@ -35,15 +35,11 @@ function registerUsers($data){
 }
 
 
-
-
-
 function setResponse($code = null, $msg = null){
     $code = ($code != '' ? $code: 404);
     header('Content-type: application/json');
     http_response_code($code);
     echo  $result_json  =  json_encode(array('msg' => $msg ));
     exit;
-
 }
 

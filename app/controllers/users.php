@@ -15,6 +15,8 @@ class Users{
     const VALUE_ACTIVE = 1;
 
     public static function create_user($username, $email, $password){
+        
+        //TODO secure
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
         try{
@@ -35,10 +37,8 @@ class Users{
                 die("error: " ."==> ". $errorCode ." ==> ".  $e->getMessage());
             }
         }
-
         return 0;
     }
-
 
     public static function getAll(){
         return  User::get();
