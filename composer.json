@@ -1,0 +1,17 @@
+{
+  "name": "illuminate-example/eloquent",
+  "license": "Apache-2.0",
+  "description": "Implementation of Database Queries with illuminate and Eloquent",
+    "type": "project",
+    "require": {
+    	"illuminate/database": "5.1.8",
+    "raveren/kint": "^1.1"
+    	},
+    "autoload": {
+        "psr-4": {
+                   "Controllers\\": "app/controllers/",
+                    "Models\\": "app/models/"
+
+                 }
+    }
+}
