@@ -1,35 +1,48 @@
 <?php
 
-$data = json_decode(file_get_contents('php://input'), true);
-
-
-$method = $data['method'];
-
-die($method);
-
-$username = $data['username'];
-$password = $data['password'];
-
-
-if(empty($username) || empty($password) ){
-    setResponse(404, "Data incompled");
-}
-
 require 'start.php';
 use Controllers\Users;
 
-$user = Users::create_user($username ,$password, $username);
+$data = json_decode(file_get_contents('php://input'), true);
 
-echo $user;
+$method = $data['method'];
+
+switch($method) {
+    case "REGISTER":
+        registerUsers($data);
+        break;
+    case "LOGIN":
+        echo "LOGIN";
+        break;
+    default:
+        echo "No match!";
+        break;
+}
+
+
+function registerUsers($data){
+    $username = $data['username'];
+    $email = $data['email'];
+    $password = $data['password'];
+
+    if(empty($username) || empty($password) || empty($email)){
+        setResponse(203, "Data incompled");
+    }
+
+    $user = Users::create_user($username ,$password, $email);
+    setResponse(200, $user);
+
+}
 
 
 
 
-function setResponse($error_code = null, $msg = null){
-    $error_code = ($error_code != '' ? $error_code: 404);
+
+function setResponse($code = null, $msg = null){
+    $code = ($code != '' ? $code: 404);
     header('Content-type: application/json');
-    http_response_code($error_code);
-    echo  $result_json  =  json_encode(array('error' => $msg ));
+    http_response_code($code);
+    echo  $result_json  =  json_encode(array('msg' => $msg ));
     exit;
 
 }

@@ -12,17 +12,17 @@ class Users{
     const FIELD_EMAIL = "email";
     const FIELD_PASSWORD = "password";
     const FIELD_ACTIVE = "active";
-
+    const VALUE_ACTIVE = 1;
 
     public static function create_user($username, $email, $password){
-
+        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
         try{
             $result = User::create([
                 self::FIELD_USERNAME  => $username,
                 self::FIELD_EMAIL      => $email,
-                self::FIELD_PASSWORD   => $password,
-                self::FIELD_ACTIVE     => 1
+                self::FIELD_PASSWORD   => $hashed_password,
+                self::FIELD_ACTIVE     => self::VALUE_ACTIVE
             ]);
 
             if($result->getKey() != 0){

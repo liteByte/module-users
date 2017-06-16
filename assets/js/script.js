@@ -6,18 +6,16 @@ const ID_FORM_REGISTER = "register-form";
 const METHOD_LOGIN = "LOGIN";
 const METHOD_REGISTER = "REGISTER";
 
-
 /* INPUT REGISTER */
 const RE_INPUT_USERNAME = "#re_username";
 const RE_INPUT_EMAIL= "#re_email";
 const RE_INPUT_PASSWORD = "#re_password";
 const RE_CONFIRM_INPUT_PASSWORD = "#confirmpassword";
 
-
-
 /* INPUT LOGIN */
 const INPUT_USERNAME = "#username";
 const INPUT_PASSWORD = "#password";
+
 
 jQuery( document ).ready(function() {
 
@@ -40,6 +38,23 @@ jQuery( document ).ready(function() {
         jQuery('#login-form-link').removeClass('active');
         jQuery(this).addClass('active');
         e.preventDefault();
+    });
+
+    jQuery(document.body).submit(function( event ) {
+        event.preventDefault();
+        var id = jQuery(event.target)[0].id;
+
+        switch(id) {
+            case ID_FORM_LOGIN:
+                userLogin();
+                break;
+            case ID_FORM_REGISTER:
+                registerUser();
+                break;
+            default:
+                return;
+        }
+
     });
 
 });
@@ -70,10 +85,6 @@ function validateFormRegister(){
                 required: "necesario",
                 minlength: "minimo 5"
             }
-        },
-        submitHandler: function(form) {
-            console.log("register");
-            registerUser();
         }
 
     });
@@ -101,7 +112,7 @@ function registerUser(){
     data = {
         username: jQuery(RE_INPUT_USERNAME).val(),
         email: $email,
-        pass : jQuery(RE_INPUT_PASSWORD).val(),
+        password : jQuery(RE_INPUT_PASSWORD).val(),
         method: METHOD_REGISTER
     };
     console.log(data);
@@ -113,18 +124,20 @@ function registerUser(){
         data: JSON.stringify(data),
         dataType : "json",
         beforeSend: function(data){},
-        success: function(data){},
+        success: function(data){
+            console.log(data);
+        },
         error: function(err){},
         complete: function(){},
         statusCode: {
-            404: function () {
-                alert( "page not found" );
+            200: function () {
+                alert( "Done" );
             }
         }
     });
 
-    register.register(function() {
-        console.log( "second complete" );
+    register.always(function() {
+        console.log( "register complete" );
     });
 
 }
@@ -133,7 +146,8 @@ function userLogin(){
     var data;
     data = {
         username: jQuery(INPUT_USERNAME).val(),
-        password: jQuery(INPUT_PASSWORD).val()
+        password: jQuery(INPUT_PASSWORD).val(),
+        method: METHOD_LOGIN
     };
 
     var login =  jQuery.ajax({
