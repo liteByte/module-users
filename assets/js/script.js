@@ -1,23 +1,10 @@
-
-const FILE_REQUEST = "request.php";
-const ID_FORM_LOGIN = "login-form";
-const ID_FORM_REGISTER = "register-form";
-
-const METHOD_LOGIN = "LOGIN";
-const METHOD_REGISTER = "REGISTER";
-
-/* INPUT REGISTER */
-const RE_INPUT_USERNAME = "#re_username";
-const RE_INPUT_EMAIL= "#re_email";
-const RE_INPUT_PASSWORD = "#re_password";
-const RE_CONFIRM_INPUT_PASSWORD = "#confirmpassword";
-
-/* INPUT LOGIN */
-const INPUT_USERNAME = "#username";
-const INPUT_PASSWORD = "#password";
-
-
 jQuery( document ).ready(function() {
+
+    validatorDefaults();
+
+    $(document)
+        .ajaxStart(function(){jQuery("body").addClass("loading"); })
+        .ajaxStop(function(){jQuery("body").removeClass("loading"); });
 
     jQuery(function(){
         validateFormRegister();
@@ -30,9 +17,11 @@ jQuery( document ).ready(function() {
         jQuery('#register-form-link').removeClass('active');
         jQuery(this).addClass('active');
         e.preventDefault();
+
     });
 
     jQuery('#register-form-link').click(function(e) {
+        resetFormRegister();
         jQuery("#register-form").delay(100).fadeIn(100);
         jQuery("#login-form").fadeOut(100);
         jQuery('#login-form-link').removeClass('active');
@@ -54,14 +43,28 @@ jQuery( document ).ready(function() {
             default:
                 return;
         }
-
     });
 
 });
 
-
+function validatorDefaults(){
+    jQuery.validator.setDefaults({
+        errorClass: 'help-block',
+        highlight: function(element){
+            jQuery(element)
+                .closest('.form-group')
+                .addClass('has-error');
+        },
+        unhighlight: function(element) {
+            jQuery(element)
+                .closest('.form-group')
+                .removeClass('has-error');
+        }
+    });
+}
 
 function validateFormRegister(){
+
     var form = jQuery( "#" + ID_FORM_REGISTER );
     form.validate({
         rules: {
@@ -77,16 +80,26 @@ function validateFormRegister(){
                 required: true
             },
             confirmpassword: {
-                equalTo: "#re_password"
+                equalTo: "#re_password",
+                required: true
             }
         },
         messages: {
             username: {
-                required: "necesario",
-                minlength: "minimo 5"
+                required: FIELD_REQUIRED_USERNAME
+            },
+            email:{
+                required: FIELD_REQUIRED_EMAIL,
+                email: FIELD_VALID_EMAIL
+            },
+            re_password:{
+                required: FIELD_REQUIRED_PASSWORD
+            },
+            confirmpassword: {
+                equalTo: FIELD_EQUAL_CONFIRM_PASSWORD,
+                required: FIELD_REQUIRED_CONFIRM_PASSWORD
             }
         }
-
     });
 }
 
@@ -115,7 +128,6 @@ function registerUser(){
         password : jQuery(RE_INPUT_PASSWORD).val(),
         method: METHOD_REGISTER
     };
-    console.log(data);
     var register = jQuery.ajax({
         crossDomain: true,
         type: "POST",
@@ -124,23 +136,58 @@ function registerUser(){
         data: JSON.stringify(data),
         dataType : "json",
         beforeSend: function(data){},
-        success: function(data){
-            console.log(data);
+        success: function(data, textStatus, xhr){
+            if(xhr.status == 200){
+                resetFormRegister();
+                gotoLogin()
+                showSuccess();
+            }else{
+                showError(err);
+            }
         },
-        error: function(err){},
+        error: function(err){
+            showError(err);
+        },
         complete: function(){},
         statusCode: {
-            200: function () {
-                alert( "Done" );
+            400: function (err) {
             }
         }
     });
 
     register.always(function() {
-        console.log( "register complete" );
+        console.log( "always" );
     });
 
 }
+
+
+function showError(err){
+    $error = err.status;
+    $json  = JSON.parse(err.responseText) ;
+    $msg = $json["msg"];
+    console.log($error + " " + $msg);
+
+    BootstrapDialog.show({
+        type:  BootstrapDialog.TYPE_DANGER,
+        title: "Error",
+        message: $msg,
+        cssClass: 'login-dialog',
+    });
+
+}
+
+
+function showSuccess(){
+    BootstrapDialog.show({
+        type:  BootstrapDialog.TYPE_SUCCESS,
+        title: "Message",
+        message: "Usuario registrado",
+        cssClass: 'login-dialog',
+    });
+}
+
+
 
 function userLogin(){
     var data;
@@ -161,6 +208,7 @@ function userLogin(){
             console.log( "beforeSend" );
         },
         success: function (data) {
+            console.log( "success" )
             console.log( data );
         },
         error: function (err) {
@@ -186,5 +234,19 @@ function userLogin(){
     login.always(function() {
         console.log( "second complete" );
     });
+}
+
+function resetFormRegister(){
+    jQuery(RE_INPUT_USERNAME).val('');
+    jQuery(RE_INPUT_EMAIL).val('');
+    jQuery(RE_INPUT_PASSWORD).val('');
+    jQuery(RE_CONFIRM_INPUT_PASSWORD).val('');
+    jQuery('.form-group').removeClass('has-error');
+    jQuery('.help-block').hide();
+
+}
+
+function gotoLogin(){
+    jQuery('#login-form-link').click();
 }
 

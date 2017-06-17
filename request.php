@@ -2,6 +2,7 @@
 
 require 'start.php';
 use Controllers\Users;
+use Helpers\Helpers as Helper;
 
 $data = json_decode(file_get_contents('php://input'), true);
 
@@ -21,25 +22,24 @@ switch($method) {
 
 
 function registerUsers($data){
+
     $username = $data['username'];
     $email = $data['email'];
     $password = $data['password'];
 
     if(empty($username) || empty($password) || empty($email)){
-        setResponse(203, "Data incompled");
+        Helper::sendResponse('400',  "Data incompled");
     }
 
-    $user = Users::create_user($username ,$password, $email);
-    setResponse(200, $user);
-
+    $result_validate = Helper::validateData($username, $email);
+    if($result_validate){
+        if(!Users::verifyExist($result_validate[0], $result_validate[1])){
+            Users::create_user($result_validate[0] ,$result_validate[1], $password);
+        }else{
+            Helper::sendResponse('400',  "User Exist");
+        }
+    }
+    Helper::sendResponse('400',  "Error in Data");
 }
 
-
-function setResponse($code = null, $msg = null){
-    $code = ($code != '' ? $code: 404);
-    header('Content-type: application/json');
-    http_response_code($code);
-    echo  $result_json  =  json_encode(array('msg' => $msg ));
-    exit;
-}
 
