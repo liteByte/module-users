@@ -39,20 +39,38 @@ class Users{
                 Helper::sendResponse('400', $string);
             }
         }
-        return 0;
+        return true;
     }
 
 
     public static function verifyExist($username, $email){
         $result = User::where( self::FIELD_USERNAME,  $username)
-                        ->orWhere(self::FIELD_EMAIL, $email)
-                        ->get();
+            ->orWhere(self::FIELD_EMAIL, $email)
+            ->get();
         if($result->count() != 0 ){
             return true;
         }
         return false;
     }
 
+    public static function login_user($username, $password){
+        $user= User::where( self::FIELD_USERNAME,  $username)->get();
+
+        if($user->count() == 0 ){ return false; }
+
+        $user = $user->toArray();
+
+        $username_r = $user[0]['username'];
+        $password_r = $user[0]['password'];
+
+        $pass = password_verify($password, $password_r);
+
+        if(!$pass){
+            Helper::sendResponse('400', "User or Password invalid");
+        }
+        
+        return $user;
+    }
 
     public static function getAll(){
         return  User::get();

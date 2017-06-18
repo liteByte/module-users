@@ -13,10 +13,10 @@ switch($method) {
         registerUsers($data);
         break;
     case "LOGIN":
-        echo "LOGIN";
+        loginUsers($data);
         break;
     default:
-        echo "No match!";
+        Helper::sendResponse('400',  "Method not found");
         break;
 }
 
@@ -33,11 +33,9 @@ function registerUsers($data){
         Helper::sendResponse('400',  "Error in Captcha, try again");
     }
 
-
     $username = $data['username'];
     $email = $data['email'];
     $password = $data['password'];
-
 
     if(empty($username) || empty($password) || empty($email)){
         Helper::sendResponse('400',  "Data incomplete");
@@ -54,4 +52,23 @@ function registerUsers($data){
     Helper::sendResponse('400',  "Error in data entered");
 }
 
+
+function loginUsers($data){
+
+    $username  = $data['username'];
+    $password  = $data['password'];
+
+    if(!empty($username) || !empty($password)){
+
+        $result = Users::login_user($username, $password);
+
+        if(!$result){
+            Helper::sendResponse('400',  "User not register");
+        }
+
+
+        print_r(json_encode($result));
+
+    }
+}
 

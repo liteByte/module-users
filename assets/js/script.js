@@ -167,8 +167,47 @@ function registerUser(){
 
 }
 
+function userLogin(){
+    var data;
+    data = {
+        username: jQuery(INPUT_USERNAME).val(),
+        password: jQuery(INPUT_PASSWORD).val(),
+        method: METHOD_LOGIN
+    };
+
+    var login =  jQuery.ajax({
+        crossDomain: true,
+        type: "POST",
+        url: FILE_REQUEST,
+        contentType: "application/json; charset=UTF-8",
+        data: JSON.stringify(data),
+        dataType: "json",
+        beforeSend: function(data){},
+        success: function (data, textStatus, xhr) {
+            console.log("hecho");
+            if(xhr.status == 200){
+                userSuccessLogin();
+            }
+        },
+        error: function (err) {
+            showError(err);
+        },
+        complete: function(){
+            console.log( "complete" );
+        },
+        statusCode: {
+            400: function(err) {
+
+            }
+        }
+    });
+    login.always(function() {
+       console.log("always");
+    });
+}
 
 function showError(err){
+    console.log(err);
     $error = err.status;
     $json  = JSON.parse(err.responseText);
     $msg = $json["msg"];
@@ -193,54 +232,15 @@ function showSuccess(){
     });
 }
 
-
-
-function userLogin(){
-    var data;
-    data = {
-        username: jQuery(INPUT_USERNAME).val(),
-        password: jQuery(INPUT_PASSWORD).val(),
-        method: METHOD_LOGIN
-    };
-
-    var login =  jQuery.ajax({
-        crossDomain: true,
-        type: "POST",
-        url: FILE_REQUEST,
-        contentType: "application/json; charset=UTF-8",
-        data: JSON.stringify(data),
-        dataType: "json",
-        beforeSend: function(data){
-            console.log( "beforeSend" );
-        },
-        success: function (data) {
-            console.log( "success" )
-            console.log( data );
-        },
-        error: function (err) {
-            console.log( err );
-        },
-        complete: function(){
-            console.log( "complete" );
-        },
-        statusCode: {
-            404: function() {
-                alert( "page not found" );
-            }
-        }
-
-    }).done(function(){
-        console.log( "done" );
-    }).fail(function() {
-        console.log( "fail" );
-    }).always(function() {
-        console.log( "always" );
-    });
-
-    login.always(function() {
-        console.log( "second complete" );
+function userSuccessLogin(){
+    BootstrapDialog.show({
+        type:  BootstrapDialog.TYPE_SUCCESS,
+        title: "Message",
+        message: "Usuario Loguaedo",
+        cssClass: 'login-dialog',
     });
 }
+
 
 function resetFormRegister(){
     jQuery(RE_INPUT_USERNAME).val('');
