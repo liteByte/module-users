@@ -149,8 +149,6 @@ function registerUser(){
                 resetFormRegister();
                 gotoLogin()
                 showSuccess();
-            }else{
-                showError(err);
             }
         },
         error: function(err){
@@ -164,7 +162,6 @@ function registerUser(){
     });
 
     register.always(function() {
-        console.log( "always" );
         displayCapchat();
     });
 

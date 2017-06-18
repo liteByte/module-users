@@ -45,10 +45,10 @@ class Helpers{
         $url = "https://www.google.com/recaptcha/api/siteverify?secret={" . self::$secret . "}&response={$captcha}";
         $verify = file_get_contents($url);
         $captcha_success=json_decode($verify);
-
-        return $captcha_success->success;
-    }
-    
-    
-    
+        
+        if(!$captcha_success->success){
+            self::sendResponse('400',  "Error in Captcha, try again");
+        }
+       return  true;
+    }    
 }
