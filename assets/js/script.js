@@ -1,3 +1,5 @@
+var myCaptcha = null;
+
 jQuery( document ).ready(function() {
 
     validatorDefaults();
@@ -21,6 +23,8 @@ jQuery( document ).ready(function() {
     });
 
     jQuery('#register-form-link').click(function(e) {
+
+        displayCapchat();
         resetFormRegister();
         jQuery("#register-form").delay(100).fadeIn(100);
         jQuery("#login-form").fadeOut(100);
@@ -122,11 +126,15 @@ function validateFormLogin(){
 function registerUser(){
     var data;
     var $email = jQuery.trim(jQuery("input[name='email']").val());
+    $capchat = grecaptcha.getResponse();
+
     data = {
         username: jQuery(RE_INPUT_USERNAME).val(),
         email: $email,
         password : jQuery(RE_INPUT_PASSWORD).val(),
-        method: METHOD_REGISTER
+        method: METHOD_REGISTER,
+        captcha: $capchat
+
     };
     var register = jQuery.ajax({
         crossDomain: true,
@@ -157,6 +165,7 @@ function registerUser(){
 
     register.always(function() {
         console.log( "always" );
+        displayCapchat();
     });
 
 }
@@ -164,7 +173,7 @@ function registerUser(){
 
 function showError(err){
     $error = err.status;
-    $json  = JSON.parse(err.responseText) ;
+    $json  = JSON.parse(err.responseText);
     $msg = $json["msg"];
     console.log($error + " " + $msg);
 
@@ -250,3 +259,24 @@ function gotoLogin(){
     jQuery('#login-form-link').click();
 }
 
+
+function displayCapchat() {
+    if (myCaptcha === null)
+        myCaptcha = grecaptcha.render(document.getElementById('recapchat'), {
+            'sitekey': "6LdCwyUUAAAAAGTSn0zuLMqk8wBxxEm9PV9XHm5e",
+            'theme': 'light',
+            'callback' : function(response) {
+                console.log(response);
+            }
+        });
+    else
+        grecaptcha.reset(myCaptcha);
+}
+
+var onloadCallback = function() {
+//            alert("grecaptcha is ready!");
+};
+
+var verifyCallback = function(response) {
+//            alert(response);
+};

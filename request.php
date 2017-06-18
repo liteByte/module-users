@@ -23,9 +23,16 @@ switch($method) {
 
 function registerUsers($data){
 
+    $captcha = $data['captcha'];
+
+    if(!Helper::validateReCaptcha($captcha)){
+        Helper::sendResponse('400',  "Error in Captcha, try again");
+    }
+
     $username = $data['username'];
     $email = $data['email'];
     $password = $data['password'];
+
 
     if(empty($username) || empty($password) || empty($email)){
         Helper::sendResponse('400',  "Data incompled");

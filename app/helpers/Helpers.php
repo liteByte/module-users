@@ -7,7 +7,7 @@ class Helpers{
 
     static  $code;
     static $msg = "Error";
-    
+    static $secret = "6LdCwyUUAAAAAI7IzSy-9sflwmF0FstQLAN_SO2R";
     public function __construct(){
     }
 
@@ -40,10 +40,14 @@ class Helpers{
         return $returnValues;
     }
 
+    static function validateReCaptcha($captcha){
+        
+        $url = "https://www.google.com/recaptcha/api/siteverify?secret={" . self::$secret . "}&response={$captcha}";
+        $verify = file_get_contents($url);
+        $captcha_success=json_decode($verify);
 
-    
-    
-    
+        return $captcha_success->success;
+    }
     
     
     
