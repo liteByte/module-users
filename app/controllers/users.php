@@ -59,8 +59,7 @@ class Users{
         if($user->count() == 0 ){ return false; }
 
         $user = $user->toArray();
-
-        $username_r = $user[0]['username'];
+        
         $password_r = $user[0]['password'];
 
         $pass = password_verify($password, $password_r);
@@ -68,8 +67,10 @@ class Users{
         if(!$pass){
             Helper::sendResponse('400', "User or Password invalid");
         }
-        
-        return $user;
+
+        $tolken  = Helper::createToken($user);
+
+        return $tolken;
     }
 
     public static function getAll(){

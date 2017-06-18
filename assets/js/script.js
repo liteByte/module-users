@@ -186,6 +186,10 @@ function userLogin(){
         success: function (data, textStatus, xhr) {
             console.log("hecho");
             if(xhr.status == 200){
+                $temp = JSON.parse(data)
+                $token = $temp['jwt'];
+                localStorage.setItem('User', $token);
+                // alert(localStorage.getItem('User'));
                 userSuccessLogin();
             }
         },

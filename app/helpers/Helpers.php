@@ -1,7 +1,8 @@
 <?php
 
 namespace Helpers;
-
+include 'Jwt.php';
+use JWT;
 
 class Helpers{
 
@@ -50,5 +51,45 @@ class Helpers{
             self::sendResponse('400',  "Error in Captcha, try again");
         }
        return  true;
-    }    
+    }
+
+    static function createToken($user){
+
+        $secretKey = base64_decode('jwtKey');
+
+        $tokenId    = base64_encode(mcrypt_create_iv(32));
+        $issuedAt   = time();
+        $notBefore  = $issuedAt + 10;             //Adding 10 seconds
+        $expire     = $notBefore + 60;            // Adding 60 seconds
+
+        $data = [
+            'iat'  => $issuedAt,         // Issued at: time when the token was generated
+            'jti'  => $tokenId,          // Json Token Id: an unique identifier for the token
+            'nbf'  => $notBefore,        // Not before
+            'exp'  => $expire,           // Expire
+            'data' => [                  // Data related to the signer user
+                'userId'   => $user[0]['id'], // userid from the users table
+                'userName' => $user[0]['username'], // User name
+            ]
+        ];
+
+
+        $jwt = JWT::encode(
+            $data,      //Data to be encoded in the JWT
+            $secretKey, // The signing key
+            'HS512'     // Algorithm used to sign the token, see https://tools.ietf.org/html/draft-ietf-jose-json-web-algorithms-40#section-3
+        );
+
+        $unencodedArray = ['jwt' => $jwt];
+        return json_encode($unencodedArray);
+    }
+
+    static function decodeToken($token){
+        $secretKey = base64_decode('jwtKey');
+
+        $token = JWT::decode($token, $secretKey, array('HS512'));
+
+
+    }
+
 }
