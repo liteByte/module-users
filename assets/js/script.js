@@ -240,7 +240,7 @@ function userSuccessLogin(){
     BootstrapDialog.show({
         type:  BootstrapDialog.TYPE_SUCCESS,
         title: "Message",
-        message: "Usuario Loguaedo",
+        message: "Usuario Loguedo",
         cssClass: 'login-dialog',
     });
 }
