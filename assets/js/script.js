@@ -114,7 +114,17 @@ function validateFormLogin(){
         rules: {
             username: {
                 required: true,
-                minlength: 5
+            },
+            password: {
+                required: true,
+            }
+        },
+        messages: {
+            username: {
+                required: FIELD_REQUIRED_USERNAME
+            },
+            password: {
+                required: FIELD_REQUIRED_PASSWORD
             }
         },
         submitHandler: function(form) {
@@ -226,7 +236,6 @@ function showError(err){
 
 }
 
-
 function showSuccess(){
     BootstrapDialog.show({
         type:  BootstrapDialog.TYPE_SUCCESS,
@@ -245,7 +254,6 @@ function userSuccessLogin(){
     });
 }
 
-
 function resetFormRegister(){
     jQuery(RE_INPUT_USERNAME).val('');
     jQuery(RE_INPUT_EMAIL).val('');
@@ -259,7 +267,6 @@ function resetFormRegister(){
 function gotoLogin(){
     jQuery('#login-form-link').click();
 }
-
 
 function displayCapchat() {
     if (myCaptcha === null)

@@ -19,10 +19,9 @@ const INPUT_PASSWORD = "#password";
 
 /* Error Messages */
 
-
-const FIELD_REQUIRED_USERNAME = "Ingrese nombre de Usuario";
-const FIELD_REQUIRED_EMAIL = "Ingrese su email";
-const FIELD_VALID_EMAIL = "Ingrese un email valido";
-const FIELD_REQUIRED_PASSWORD = "Debe ingresar una contraseña";
-const FIELD_EQUAL_CONFIRM_PASSWORD = "Las contraseñas no coinciden";
-const FIELD_REQUIRED_CONFIRM_PASSWORD = "Repita la contraseña";
+const FIELD_REQUIRED_USERNAME = "Enter username";
+const FIELD_REQUIRED_EMAIL = "Enter your email";
+const FIELD_VALID_EMAIL = "Enter a valid email";
+const FIELD_REQUIRED_PASSWORD = "You must enter a password";
+const FIELD_EQUAL_CONFIRM_PASSWORD = "Passwords do not match";
+const FIELD_REQUIRED_CONFIRM_PASSWORD = "Repeat password";
