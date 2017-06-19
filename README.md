@@ -33,7 +33,7 @@
       `created_at` timestamp NULL DEFAULT NULL,
       `updated_at` timestamp NULL DEFAULT NULL,
       `deleted_at` timestamp NULL DEFAULT NULL
-   ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+   )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
     ALTER TABLE `users`
       ADD PRIMARY KEY (`id`);
