@@ -32,8 +32,7 @@
       `active` tinyint(1) NOT NULL DEFAULT '1',
       `created_at` timestamp NULL DEFAULT NULL,
       `updated_at` timestamp NULL DEFAULT NULL,
-      `deleted_at` timestamp NULL DEFAULT NULL
-   )ENGINE=InnoDB DEFAULT CHARSET=utf8;
+      `deleted_at` timestamp NULL DEFAULT NULL)ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
     ALTER TABLE `users`
       ADD PRIMARY KEY (`id`);
