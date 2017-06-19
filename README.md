@@ -23,6 +23,7 @@
     in the Config.php config your DATABASE
 
    script for MYSQL:
+
     CREATE TABLE `users` (
       `id` int(11) UNSIGNED NOT NULL,
       `username` varchar(100) NOT NULL,
