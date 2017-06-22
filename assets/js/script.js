@@ -10,46 +10,56 @@ jQuery( document ).ready(function() {
 
     jQuery(function(){
         validateFormRegister();
-        validateFormLogin()
+        validateFormLogin();
+        recoverPassword();
+
+        jQuery('#login-form-link').click(function(e) {
+            jQuery("#login-form").delay(100).fadeIn(100);
+            jQuery("#register-form").fadeOut(100);
+            jQuery('#register-form-link').removeClass('active');
+            jQuery(this).addClass('active');
+            e.preventDefault();
+
+        });
+
+        jQuery('#register-form-link').click(function(e) {
+
+            displayCapchat();
+            resetFormRegister();
+            jQuery("#register-form").delay(100).fadeIn(100);
+            jQuery("#login-form").fadeOut(100);
+            jQuery('#login-form-link').removeClass('active');
+            jQuery(this).addClass('active');
+            e.preventDefault();
+        });
+
+        jQuery(document.body).submit(function( event ) {
+            event.preventDefault();
+            var id = jQuery(event.target)[0].id;
+
+            switch(id) {
+                case ID_FORM_LOGIN:
+                    userLogin();
+                    break;
+                case ID_FORM_REGISTER:
+                    registerUser();
+                    break;
+                default:
+                    return;
+            }
+        });
     });
-
-    jQuery('#login-form-link').click(function(e) {
-        jQuery("#login-form").delay(100).fadeIn(100);
-        jQuery("#register-form").fadeOut(100);
-        jQuery('#register-form-link').removeClass('active');
-        jQuery(this).addClass('active');
-        e.preventDefault();
-
-    });
-
-    jQuery('#register-form-link').click(function(e) {
-
-        displayCapchat();
-        resetFormRegister();
-        jQuery("#register-form").delay(100).fadeIn(100);
-        jQuery("#login-form").fadeOut(100);
-        jQuery('#login-form-link').removeClass('active');
-        jQuery(this).addClass('active');
-        e.preventDefault();
-    });
-
-    jQuery(document.body).submit(function( event ) {
-        event.preventDefault();
-        var id = jQuery(event.target)[0].id;
-
-        switch(id) {
-            case ID_FORM_LOGIN:
-                userLogin();
-                break;
-            case ID_FORM_REGISTER:
-                registerUser();
-                break;
-            default:
-                return;
-        }
-    });
-
 });
+
+
+function recoverPassword(){
+    jQuery('#forgotpass').click(function(e) {
+        e.preventDefault();
+
+
+    });
+}
+
 
 function validatorDefaults(){
     jQuery.validator.setDefaults({
@@ -216,7 +226,7 @@ function userLogin(){
         }
     });
     login.always(function() {
-       console.log("always");
+        console.log("always");
     });
 }
 
