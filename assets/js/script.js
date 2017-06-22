@@ -66,7 +66,6 @@ function recoverPassword(){
             message: '<label id="recoverlabel" > Enter your email</label>: ' +
             '<input type="text" class="form-control" id="recover">',
             buttons:[{
-                hotkey: 13,
                 label: 'Send',
                 cssClass: 'btn-primary',
                 icon: 'glyphicon glyphicon-send',

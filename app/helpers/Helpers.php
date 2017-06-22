@@ -24,7 +24,7 @@ class Helpers{
 
     Static function validateData($username, $email){
         $result = true;
-        
+
         $email  = filter_var($email, FILTER_SANITIZE_EMAIL);
 
         if (filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
@@ -42,15 +42,15 @@ class Helpers{
     }
 
     static function validateReCaptcha($captcha){
-        
+
         $url = "https://www.google.com/recaptcha/api/siteverify?secret={" . self::$secret . "}&response={$captcha}";
         $verify = file_get_contents($url);
         $captcha_success=json_decode($verify);
-        
+
         if(!$captcha_success->success){
             self::sendResponse('400',  "Error in Captcha, try again");
         }
-       return  true;
+        return  true;
     }
 
     static function createToken($user){
@@ -92,24 +92,23 @@ class Helpers{
 
     }
 
-    public static function recoverpassword($info, $newPassword){
-        $CI =& get_instance();
+    public static function sendemail($email){
 
-        $data['password']= $newPassword;
-        $data['name']= $info['data']->name;
+        $to = $email;
+        $subject = "Recover Password";
+        $from = "test@gmail.com";
 
-        $CI ->email->from('info@4isolutions.com.ar', 'CMZ');
-        $CI ->email->to($info['data']->email);
-        $CI->email->subject('Recuperacion de contraseña');
-        $CI->email->message($CI->load->view('email/recover_password', $data, true) );
-        $CI->email->set_mailtype('html');
+        $headers = "From: " . $from . "\r\n";
+        $headers .= "Reply-To: ". $from . "\r\n";
+        $headers .= "CC: test@example.com\r\n";
+        $headers .= "MIME-Version: 1.0\r\n";
+        $headers .= "Content-Type: text/html; charset=UTF-8";
 
+        $message =  file_get_contents('http://localhost/module_users/app/helpers/template.html');
 
-        if($CI->email->send()){
-            return $CI->response(array('msg'=>"Email enviado correctamente"), RC::HTTP_OK);
-        } else {
-            return $CI->response(array('error'=>show_error($CI->email->print_debugger())), RC::HTTP_INTERNAL_SERVER_ERROR);
+        if(!mail($to,$subject,$message, $headers)){
+            return false;
         }
+        return true;
     }
-    
 }

@@ -75,17 +75,12 @@ function loginUsers($data){
 }
 
 function recoverPassword($data){
-
-
+    
     $email  = $data['email'];
 
     if(!empty($email)){
         if(Users::emailExist($email)){
-            $headers = 'From: ' ."info@facebook.com" . "\r\n".
-                'Reply-To: ' . "info@facebook.com" . "\r\n" .
-                'X-Mailer: PHP/' . phpversion();
-
-           if(mail($email,"Recover Password","Ingreso a facebook", $headers)){
+           if(Helper::sendemail($email)){
                Helper::sendResponse('200',  "Ckeck the email");
                return;
            }else{
@@ -97,9 +92,6 @@ function recoverPassword($data){
         }
 
     }
-
-
-
 
 }
 
