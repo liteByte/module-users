@@ -15,6 +15,7 @@ jQuery( document ).ready(function() {
         recoverPassword();
 
         jQuery('#login-form-link').click(function(e) {
+            resetFormLogin();
             jQuery("#login-form").delay(100).fadeIn(100);
             jQuery("#register-form").fadeOut(100);
             jQuery('#register-form-link').removeClass('active');
@@ -375,8 +376,14 @@ function resetFormRegister(){
     jQuery(RE_CONFIRM_INPUT_PASSWORD).val('');
     jQuery('.form-group').removeClass('has-error');
     jQuery('.help-block').hide();
-
 }
+
+function resetFormLogin(){
+    jQuery(INPUT_USERNAME).val('');
+    jQuery(INPUT_PASSWORD).val('');
+}
+
+
 
 function gotoLogin(){
     jQuery('#login-form-link').click();
