@@ -22,20 +22,7 @@
 * Database configuration
     in the Config.php config your DATABASE
 
-   script for MYSQL:
-
-    CREATE TABLE `users` (
-      `id` int(11) UNSIGNED NOT NULL,
-      `username` varchar(100) NOT NULL,
-      `email` varchar(200) NOT NULL,
-      `password` varchar(200) NOT NULL,
-      `active` tinyint(1) NOT NULL DEFAULT '1',
-      `created_at` timestamp NULL DEFAULT NULL,
-      `updated_at` timestamp NULL DEFAULT NULL,
-      `deleted_at` timestamp NULL DEFAULT NULL)ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-    ALTER TABLE `users`
-      ADD PRIMARY KEY (`id`);
+   script for MYSQL in file: "base.sql"
 
 
 
