@@ -22,7 +22,7 @@
 * Database configuration
     in the Config.php config your DATABASE
 
-   script for MYSQL in file: "base.sql"
+   Script for MYSQL in file: "base.sql"
 
 
 
