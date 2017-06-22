@@ -1,7 +1,8 @@
 var myCaptcha = null;
+var dialogInstance1;
 
 jQuery( document ).ready(function() {
-
+    recoverPassword();
     validatorDefaults();
 
     $(document)
@@ -49,6 +50,8 @@ jQuery( document ).ready(function() {
             }
         });
     });
+
+
 });
 
 
@@ -56,10 +59,111 @@ function recoverPassword(){
     jQuery('#forgotpass').click(function(e) {
         e.preventDefault();
 
+        BootstrapDialog.show({
+            cssClass: 'login-dialog',
+            title: 'Recover password',
+            message: '<label id="recoverlabel" > Enter your email</label>: ' +
+            '<input type="text" class="form-control" id="recover">',
+            buttons:[{
+                hotkey: 13,
+                label: 'Send',
+                cssClass: 'btn-primary',
+                icon: 'glyphicon glyphicon-send',
+                action: function (dialog, event) {
+                    sendEmail(dialog, event);
+                },
+            },{
+                label: 'Close',
+                action: function (dialog) {
+                    dialog.close();
+                }
+            }
+            ]
+        });
 
     });
 }
 
+function sendEmail(dialog, event){
+
+    var LabelRecover = $("#recoverlabel").empty();
+
+    var email = jQuery('#recover').val();
+
+    if(email.length == 0 ){
+        dialog.setType(BootstrapDialog.TYPE_WARNING);
+        LabelRecover.append("Can not be empty");
+        return;
+    }
+
+    if(!validateEmail(email)){
+        dialog.setType(BootstrapDialog.TYPE_DANGER);
+        LabelRecover.append("Insert a valid email");
+        return;
+    }
+
+    dialog.setTitle('Sending...');
+    LabelRecover.append("wait a moment");
+
+    dialog.setType(BootstrapDialog.TYPE_SUCCESS)
+    dialog.options.buttons[0].autospin=true;
+    dialog.enableButtons(false);
+    dialog.setClosable(false);
+
+    var data;
+    data = {
+        email: email,
+        method: "RECOVER"
+    };
+
+    var recover = jQuery.ajax({
+        crossDomain: true,
+        type: "POST",
+        url: FILE_REQUEST,
+        contentType: "application/json; charset=UTF-8",
+        data: JSON.stringify(data),
+        dataType : "json",
+        beforeSend: function(data){},
+        success: function(data, textStatus, xhr){
+            if(xhr.status == 200){
+                dialog.setTitle('Success');
+                dialog.setMessage(data.msg);
+                dialog.enableButtons(true);
+                dialog.setClosable(true);
+                event.data.$button.stopSpin();
+                dialog.close();
+                BootstrapDialog.show({
+                    type: BootstrapDialog.TYPE_SUCCESS,
+                    cssClass: 'login-dialog',
+                    title: 'Success',
+                    message: data.msg + ":  " + email
+                });
+
+            }
+        },
+        error: function(err){
+            $json  = JSON.parse(err.responseText);
+            $msg = $json["msg"];
+            dialog.setTitle('Error sending email.');
+            LabelRecover.empty().append($msg);
+            dialog.setType(BootstrapDialog.TYPE_DANGER);
+            event.data.$button.stopSpin();
+            event.data.$button.disable = true;
+            dialog.enableButtons(true);
+            dialog.setClosable(true);
+        },
+        complete: function(){},
+        statusCode: {
+            400: function (err) {
+            }
+        }
+    });
+}
+
+function validateEmail($email) {
+    var emailReg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
+    return emailReg.test( $email );
+}
 
 function validatorDefaults(){
     jQuery.validator.setDefaults({

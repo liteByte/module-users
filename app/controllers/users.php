@@ -81,5 +81,15 @@ class Users{
         $result  = User::find($id);
         return $result;
     }
+    
+    public static function emailExist($email){
+        $result = User::where(self::FIELD_EMAIL, $email)
+            ->get();
+        if($result->count() != 0 ){
+            return true;
+        }
+        return false;
+    }
+       
 
 }

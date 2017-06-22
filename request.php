@@ -15,6 +15,9 @@ switch($method) {
     case "LOGIN":
         loginUsers($data);
         break;
+    case "RECOVER":
+        recoverPassword($data);
+        break;
     default:
         Helper::sendResponse('400',  "Method not found");
         break;
@@ -52,7 +55,6 @@ function registerUsers($data){
     Helper::sendResponse('400',  "Error in data entered");
 }
 
-
 function loginUsers($data){
 
     $username  = $data['username'];
@@ -70,5 +72,34 @@ function loginUsers($data){
         print_r(json_encode($result));
 
     }
+}
+
+function recoverPassword($data){
+
+
+    $email  = $data['email'];
+
+    if(!empty($email)){
+        if(Users::emailExist($email)){
+            $headers = 'From: ' ."info@facebook.com" . "\r\n".
+                'Reply-To: ' . "info@facebook.com" . "\r\n" .
+                'X-Mailer: PHP/' . phpversion();
+
+           if(mail($email,"Recover Password","Ingreso a facebook", $headers)){
+               Helper::sendResponse('200',  "Ckeck the email");
+               return;
+           }else{
+               Helper::sendResponse('400',  "Problem Sendind email, try later");
+           }
+
+        }else{
+            Helper::sendResponse('400',  "User not register");
+        }
+
+    }
+
+
+
+
 }
 

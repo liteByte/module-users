@@ -5,6 +5,8 @@ const ID_FORM_REGISTER = "register-form";
 
 const METHOD_LOGIN = "LOGIN";
 const METHOD_REGISTER = "REGISTER";
+const METHOD_RECOVER= "RECOVER";
+
 
 /* INPUT REGISTER */
 const RE_INPUT_USERNAME = "#re_username";

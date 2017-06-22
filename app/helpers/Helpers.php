@@ -92,4 +92,24 @@ class Helpers{
 
     }
 
+    public static function recoverpassword($info, $newPassword){
+        $CI =& get_instance();
+
+        $data['password']= $newPassword;
+        $data['name']= $info['data']->name;
+
+        $CI ->email->from('info@4isolutions.com.ar', 'CMZ');
+        $CI ->email->to($info['data']->email);
+        $CI->email->subject('Recuperacion de contraseña');
+        $CI->email->message($CI->load->view('email/recover_password', $data, true) );
+        $CI->email->set_mailtype('html');
+
+
+        if($CI->email->send()){
+            return $CI->response(array('msg'=>"Email enviado correctamente"), RC::HTTP_OK);
+        } else {
+            return $CI->response(array('error'=>show_error($CI->email->print_debugger())), RC::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+    
 }
