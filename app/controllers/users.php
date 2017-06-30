@@ -3,6 +3,7 @@
 
 namespace Controllers;
 use Models\User;
+use Helpers\Helpers as Helper;
 use \Illuminate\Database\QueryException as exc;
 
 
@@ -15,7 +16,7 @@ class Users{
     const VALUE_ACTIVE = 1;
 
     public static function create_user($username, $email, $password){
-        
+
         //TODO secure
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
@@ -28,16 +29,48 @@ class Users{
             ]);
 
             if($result->getKey() != 0){
-                return $result->getKey();
+                Helper::sendResponse('200', $result->getKey());
             }
 
         }catch (exc $e){
             $errorCode = $e->errorInfo[1];
             if($errorCode <> 0){
-                die("error: " ."==> ". $errorCode ." ==> ".  $e->getMessage());
+                $string  = "error: " ."==> ". $errorCode ." ==> ".  $e->getMessage();
+                Helper::sendResponse('400', $string);
             }
         }
-        return 0;
+        return true;
+    }
+
+
+    public static function verifyExist($username, $email){
+        $result = User::where( self::FIELD_USERNAME,  $username)
+            ->orWhere(self::FIELD_EMAIL, $email)
+            ->get();
+        if($result->count() != 0 ){
+            return true;
+        }
+        return false;
+    }
+
+    public static function login_user($username, $password){
+        $user= User::where( self::FIELD_USERNAME,  $username)->get();
+
+        if($user->count() == 0 ){ return false; }
+
+        $user = $user->toArray();
+        
+        $password_r = $user[0]['password'];
+
+        $pass = password_verify($password, $password_r);
+
+        if(!$pass){
+            Helper::sendResponse('400', "User or Password invalid");
+        }
+
+        $tolken  = Helper::createToken($user);
+
+        return $tolken;
     }
 
     public static function getAll(){
@@ -48,6 +81,15 @@ class Users{
         $result  = User::find($id);
         return $result;
     }
-
+    
+    public static function emailExist($email){
+        $result = User::where(self::FIELD_EMAIL, $email)
+            ->get();
+        if($result->count() != 0 ){
+            return true;
+        }
+        return false;
+    }
+       
 
 }
